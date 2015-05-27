@@ -1,0 +1,7 @@
+- Make the maze
+- Agents (4 Ghosts, 2 Pacmans). Make some sort of class and operators. 
+Keep track of direction and energy count. Make operators to move
+
+
+
+
