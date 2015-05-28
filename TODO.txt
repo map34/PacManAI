@@ -1,7 +1,26 @@
+- Game
+	Pacman vs Ms. Pacman
+	Ghost will only stop them and make them lose points
+	Each ghost will keep track of their own territory and try to tag Pacman
+	Goal is for pacman to gather most points (energy tablets (call it something else))
+	Use minimax, pacman takes 1 turn, ghosts take another turn, Ms. pacman takes another turn
+
 - Make the maze
 - Agents (4 Ghosts, 2 Pacmans). Make some sort of class and operators. 
 Keep track of direction and energy count. Make operators to move
+	- Ghosts (call something else for originality)
+		- Characters
+			Minion
+			Iron Man
+			Roger Federer
+			Marshawn Lynch
+
+		- Intelligence
+			Closer to Pac man, higher priority
+			Keep track of ghosts position to spread out
 
 
+	- Pacman
+		-  
 
 
