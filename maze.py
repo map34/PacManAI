@@ -2,15 +2,15 @@ from tkinter import *
 import math
 import copy
 
+WIDTH = 630
+HEIGHT = 630
 
 
 # FOR GUI
 master = Tk() 
-w = Canvas(master, width=610, height=610)
+w = Canvas(master, width=WIDTH, height=HEIGHT)
 
-# INITIAL STATES
-DIMX = 60
-DIMY = 60
+
 
 def getMaze(fname):
     mazeList = []
@@ -24,29 +24,32 @@ def getMaze(fname):
 def dim(mazeList):
     return [len(mazeList), len(mazeList[0])]
 
-print(dim(getMaze("maze.txt")))
 
 def drawMaze(maze):
 
+    dimx = dim(maze)[0]
+    dimy = dim(maze)[1]
     mazeList = maze
-    w.delete("all")
+    w.delete("all") 
     w.pack()
     x0 = 0
     y0 = 0
-    x1 = 10
-    y1 = 10
+    x1 = WIDTH/dimx
+    y1 = HEIGHT/dimx
     for i in range(dim(mazeList)[0]):
         x0 = 0
-        x1 = 10
+        x1 = WIDTH/dimx
         for j in range (dim(mazeList)[1]):
             if mazeList[i][j] == '1':
                 w.create_rectangle(x0, y0, x1,y1, fill="blue")
             elif mazeList[i][j] == '<':
-                w.create_oval(x0+1,y0+1,x1-1,y1-1, fill="red")
-            x0 += 10
-            x1 += 10
-        y0 += 10
-        y1 += 10
+                w.create_oval(x0+5,y0+5,x1-5,y1-5, fill="red")
+            elif mazeList[i][j] == '0':
+                w.create_oval(x0+7,y0+7,x1-7,y1-7, fill="yellow")
+            x0 += WIDTH/dimx
+            x1 += WIDTH/dimx
+        y0 += WIDTH/dimx
+        y1 += WIDTH/dimx
 
 '''def runGUI():
     drawMaze(maze)
@@ -80,15 +83,19 @@ def printMaze():
     print(mazeStr)
 
 def removePacman(row,col):
-    maze[row][col] = '0'
+    maze[row][col] = 'p'
 
 
 ########################## BACK END ############################
 
 
-maze = getMaze("maze.txt")
-START = 61
+maze = getMaze("maze1.txt")
+# INITIAL STATES
+DIMX = dim(maze)[0]-1
+DIMY = dim(maze)[1]-1
+START = DIMX + 1
 EXIT = DIMX*DIMY - 1
+
 
 def runPath(path):
     task(path)
@@ -102,12 +109,12 @@ def task(path):
     drawMaze(maze)
     removePacman(row,col)
     task.counter +=1
+    master.update()
     if (task.counter == len(path)):
         task.counter = 0
+        return
     else:
-        master.after(30, lambda: task(path))
-
-    print("Haha")
+        master.after(500, lambda: task(path))
     #print(task.counter)
     #if (task.counter < len(path)-1):
         #task.counter += 1
