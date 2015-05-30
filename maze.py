@@ -99,7 +99,11 @@ EXIT = DIMX*DIMY - 1
 
 def runPath(path):
     task(path)
+    Button(master, text="Quit", command=quit).pack()
     master.mainloop()
+
+def quit():
+    master.quit()
 
 def task(path):
     state = path[task.counter]
