@@ -89,7 +89,7 @@ def removePacman(row,col):
 ########################## BACK END ############################
 
 
-maze = getMaze("maze1.txt")
+maze = getMaze("maze.txt")
 # INITIAL STATES
 DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
