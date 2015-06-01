@@ -68,7 +68,6 @@ def printMaze():
         mazeStr += "\n"
     print(mazeStr)
 
-
 def removePacman(row,col):
     maze[row][col] = 'p'
 
@@ -82,13 +81,17 @@ def getPelletIndex():
 ########################## BACK END ############################
 
 
-maze = getMaze("maze.txt")
+maze = getMaze("maze1.txt")
 # INITIAL STATES
 DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
 START = DIMX + 1
 EXIT = DIMX*DIMY - 1
+<<<<<<< HEAD
 # EXIT = getPelletIndex()
+=======
+
+>>>>>>> parent of 4b927f4... New files
 
 def runPath(path):
     task(path)
@@ -119,6 +122,23 @@ def task(path):
     
 task.counter = 0
 
+<<<<<<< HEAD
+=======
+def task2(path):
+    state = path[1]
+    row = int(state/DIMX)
+    col = state % DIMX
+    putPacMan(row,col)
+    drawMaze(maze)
+    removePacman(row,col)
+
+    #print()
+    
+
+        
+task.counter = 0
+
+>>>>>>> parent of 4b927f4... New files
 '''def DESCRIBE_STATE(state):
     row = int(state/ DIMX)
     col = state % DIMX
@@ -232,13 +252,13 @@ def h_hammings(s):
     r = int(s / DIMX)
     c = s % DIMX
     sum = 0
-    if (maze[r][c+1] == '1'):
+    if (maze.is_wall(r,c,1,0)):
         sum += 1
-    if (maze[r][c-1] == '1'):
+    if (maze.is_wall(r,c,0,1)):
         sum += 1
-    if (maze[r-1][c] == '1'):
+    if (maze.is_wall(r,c,-1,0)):
         sum += 1
-    if (maze[r+1][c] == '1' ):
+    if (maze.is_wall(r,c,0,-1)):
         sum += 1
     return sum
 
