@@ -82,6 +82,7 @@ def printMaze():
         mazeStr += "\n"
     print(mazeStr)
 
+
 def removePacman(row,col):
     maze[row][col] = 'p'
 
@@ -96,6 +97,8 @@ DIMY = dim(maze)[1]-1
 START = DIMX + 1
 EXIT = DIMX*DIMY - 1
 
+
+ 
 
 def runPath(path):
     task(path)
@@ -134,8 +137,6 @@ def task2(path):
     removePacman(row,col)
 
     #print()
-    
-
         
 task.counter = 0
 
@@ -243,13 +244,13 @@ def h_hammings(s):
     r = int(s / DIMX)
     c = s % DIMX
     sum = 0
-    if (maze.is_wall(r,c,1,0)):
+    if (maze[r][c+1] == '1'):
         sum += 1
-    if (maze.is_wall(r,c,0,1)):
+    if (maze[r][c-1] == '1'):
         sum += 1
-    if (maze.is_wall(r,c,-1,0)):
+    if (maze[r-1][c] == '1'):
         sum += 1
-    if (maze.is_wall(r,c,0,-1)):
+    if (maze[r+1][c] == '1' ):
         sum += 1
     return sum
 
