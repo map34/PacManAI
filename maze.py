@@ -2,11 +2,11 @@ from tkinter import *
 import math
 import random
 import copy
-import PacMan as agentA
-import IronMan as agentB
-import RogerFederer as agentC
-import minion as agentD
-import marshawnLynch as agentE
+#import PacMan as agentA
+#import IronMan as agentB
+#import RogerFederer as agentC
+#import minion as agentD
+#import marshawnLynch as agentE
 
 WIDTH = 630
 HEIGHT = 630
@@ -85,9 +85,11 @@ def printMaze():
             elif maze[i][j] == '1':
                 mazeStr += "#"
             elif maze[i][j] == 'M':
-                mazeStr += "M"
-            #else :
-                #mazeStr += "<"
+               mazeStr += "M"
+            elif maze[i][j] == '<':
+                mazeStr += "<"
+            else:
+                mazeStr += "."
             #elif maze[i][j] == 'M':
                 #mazeStr += 'M'
         mazeStr += "\n"
@@ -235,33 +237,37 @@ def goal_message(s):
 
 
 ################# ENEMIES ###################
-agentBIndex = 21
+agentBIndex = 81
 agentCIndex = 39
 agentDIndex = 371
 agentEIndex = 399
 
 # Puts enemy 1 to a place
 def putEnemy1(index):
+    [rowOld, colOld] = coordinate(index)
+    maze[rowOld][colOld] = "0"
     options = []
-    row = index[0]
-    col = index[1]
+
     #[row, col] = coordinate(index)
-    left = [row, col-1]
-    options.append(left)
-    right = [row, col + 1]
-    options.append(right) 
-    up = [row + 1, col]
+    right = index+1
+    options.append(right)
+    left = index-1
+    options.append(left) 
+    up = index -(DIMY)
     options.append(up)
-    down = [row - 1, col]
+    down = index + (DIMY)
     options.append(down)
 
+    #print(options)
     choose_to_move = random.choice(options)
-    check = maze[choose_to_move[0]][choose_to_move[1]]
-    while check == '1' and check == '<' and choose_to_move[0] < DIMX and choose_to_move[1] < DIMY:
+    [row, col] = coordinate(choose_to_move)
+    check = maze[row][col]
+    while check == '1':
         choose_to_move = random.choice(options)
-        check = maze[choose_to_move[0]][choose_to_move[1]]
-    print(choose_to_move)
-    maze[choose_to_move[0]][choose_to_move[1]] = 'M'
+        [row, col] = coordinate(choose_to_move)
+        check = maze[row][col]
+    
+    maze[row][col] = 'M'
 
     return choose_to_move
 
