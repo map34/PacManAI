@@ -11,6 +11,7 @@ master = Tk()
 w = Canvas(master, width=WIDTH, height=HEIGHT)
 
 
+# Get the maze
 def getMaze(fname):
     mazeList = []
     with open(fname) as f:
@@ -20,11 +21,13 @@ def getMaze(fname):
             mazeList.append(list(wall))
     return mazeList
 
+# Get dimension of the maze
 def dim(mazeList):
     return [len(mazeList), len(mazeList[0])]
 
-
+# Draws the maze
 def drawMaze(maze):
+
     dimx = dim(maze)[0]
     dimy = dim(maze)[1]
     mazeList = maze
@@ -49,8 +52,23 @@ def drawMaze(maze):
         y0 += WIDTH/dimx
         y1 += WIDTH/dimx
 
+'''def runGUI():
+    drawMaze(maze)
+    
+    def task():
+        createGUI("maze.txt",w)
+        master.after(500, task2)
+
+    def task2():
+        createGUI("maze1.txt",w)
+        master.after(500, task)
+
+    master.after(500, task)
+    master.mainloop()
+'''
+
 def putPacMan(row, col):
-    maze[row][col] = '<'
+    mazeGUI[row][col] = '<'
 
 def printMaze():
     mazeStr = ""
@@ -67,20 +85,29 @@ def printMaze():
 
 
 def removePacman(row,col):
-    maze[row][col] = 'p'
+    mazeGUI[row][col] = 'p'
 
+def getPelletIndex():
+    for i in range(DIMX):
+        for j in range(DIMY):
+            if (maze[i][j] == '0'):
+                print("first 0 is : " + str(i * DIMX + j))
+                return i * DIMX + j
 
+    return -1
 ########################## BACK END ############################
 
 
 maze = getMaze("maze.txt")
+mazeGUI = getMaze("maze.txt")
 # INITIAL STATES
 DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
-START = DIMX+1
-EXIT = DIMX*DIMY - 1
-
-GHOST_START = DIMX*DIMY - 1
+START = DIMX + 1
+[x, y] = [int(START/DIMX), START % DIMX]
+maze[x][y] = ' '
+# EXIT = DIMX*DIMY - 1
+EXIT = getPelletIndex()
 
 
  
@@ -90,8 +117,6 @@ def runPath(path):
     Button(master, text="Quit", command=quit).pack()
     master.mainloop()
 
-
-
 def quit():
     master.quit()
 
@@ -100,7 +125,7 @@ def task(path):
     row = int(state/DIMX)
     col = state % DIMX
     putPacMan(row,col)
-    drawMaze(maze)
+    drawMaze(mazeGUI)
     removePacman(row,col)
     task.counter +=1
     master.update()
@@ -148,10 +173,12 @@ def can_move(s, From, To):
     From = copy_state(s)
     nFrom = (int(From/ DIMX), From % DIMX)
     nTo = (int(To / DIMX), To % DIMX)
+
     #print(nFrom)
     #print(nTo)
+    
+    if (maze[nTo[0]][nTo[1]] != '1' and From != To):
 
-    if (maze[nTo[0]][nTo[1]] == '0' and From != To):
         if nFrom[0] == nTo[0] and nFrom[1] == nTo[1]-1 :
             return True
         elif nFrom[0] == nTo[0] and nFrom[1] == nTo[1]+1 :
@@ -164,9 +191,24 @@ def can_move(s, From, To):
         return False
 
 def move(s,From,To):
+    # print('s is : ' + str(s))
+    # print('From is : ' + str(From))
+    # print('To is : ' + str(To) + '\n')
+    # [i, j] = coordinate(To)
+    # print('To ' + str(To))
+    # maze[i][j] = ' '
     return To
 
 def goal_test(s):
+    # global EXIT
+    # if (s == EXIT):
+    #     print("here")
+    #     printMaze()
+    #     EXIT = getPelletIndex();
+    #     if (EXIT == -1):
+    #         return True
+    # return False
+    # print(maze[1])
     return s == EXIT
 
 def goal_message(s):
@@ -247,7 +289,10 @@ def h_manhattan(s):
 
 # return a cordinate of an index
 def coordinate(index):
-	return [int(index/DIMX), index % DIMX]
+    return [int(index/DIMX), index % DIMX]
+
+def index(coordinate):
+    return i * DIMX + j
 
 #<GOAL_TEST> (optional)
 GOAL_TEST = lambda s: goal_test(s)
