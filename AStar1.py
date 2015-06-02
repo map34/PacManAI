@@ -33,8 +33,10 @@ def runAStar():
     print(str(count) + " states examined.")
 
 def AStar(initial_state):
-    global count, BACKLINKS
+    global count, BACKLINKS, enemy1State
     OPEN = [initial_state]
+    enemy1State = Problem.coordinate(Problem.agentBIndex)
+
     CLOSED = []
     GVALUE = {}
     FVALUE = {}
@@ -44,6 +46,9 @@ def AStar(initial_state):
     FVALUE[Problem.HASHCODE(initial_state)] = GVALUE[Problem.HASHCODE(initial_state)] + HFunction(initial_state)
     while OPEN != []:
         # Finding a minimum state based on FVALUE
+        # move ghost
+        enemy1State = Problem.putEnemy1(enemy1State)
+        #Problem.printMaze()
         minimumState = initial_state
         for state in OPEN:
             minimumState = state
@@ -57,7 +62,6 @@ def AStar(initial_state):
         CLOSED.append(n)
 
         # Ending state
-
         if Problem.GOAL_TEST(n):
             if n == Problem.EXIT:
                 backtrace(n)
@@ -106,9 +110,6 @@ def AStar(initial_state):
                     continue
                 gTemp = GVALUE[Problem.HASHCODE(n)] + 1
                 hTemp = HFunction(newState)
-
-                # Move ghost
-                Problem.moveEnemy()
 
 
                 if not occurs_in(newState, OPEN) or gTemp < GVALUE[Problem.HASHCODE(newState)]:

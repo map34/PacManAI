@@ -1,5 +1,6 @@
 from tkinter import *
 import math
+import random
 import copy
 import PacMan as agentA
 import IronMan as agentB
@@ -83,8 +84,12 @@ def printMaze():
                 mazeStr += " "
             elif maze[i][j] == '1':
                 mazeStr += "#"
-            else:
-                mazeStr += "<"
+            elif maze[i][j] == 'M':
+                mazeStr += "M"
+            #else :
+                #mazeStr += "<"
+            #elif maze[i][j] == 'M':
+                #mazeStr += 'M'
         mazeStr += "\n"
     print(mazeStr)
 
@@ -228,10 +233,37 @@ def goal_message(s):
 # def ghost():
     # int index = 
 
-agentBIndex = 39
+
+################# ENEMIES ###################
+agentBIndex = 21
 agentCIndex = 39
 agentDIndex = 371
 agentEIndex = 399
+
+# Puts enemy 1 to a place
+def putEnemy1(index):
+    options = []
+    row = index[0]
+    col = index[1]
+    #[row, col] = coordinate(index)
+    left = [row, col-1]
+    options.append(left)
+    right = [row, col + 1]
+    options.append(right) 
+    up = [row + 1, col]
+    options.append(up)
+    down = [row - 1, col]
+    options.append(down)
+
+    choose_to_move = random.choice(options)
+    check = maze[choose_to_move[0]][choose_to_move[1]]
+    while check == '1' and check == '<' and choose_to_move[0] < DIMX and choose_to_move[1] < DIMY:
+        choose_to_move = random.choice(options)
+        check = maze[choose_to_move[0]][choose_to_move[1]]
+    print(choose_to_move)
+    maze[choose_to_move[0]][choose_to_move[1]] = 'M'
+
+    return choose_to_move
 
 
 class Operator:
