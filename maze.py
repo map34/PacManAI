@@ -57,11 +57,9 @@ def drawMaze(maze):
     def task():
         createGUI("maze.txt",w)
         master.after(500, task2)
-
     def task2():
         createGUI("maze1.txt",w)
         master.after(500, task)
-
     master.after(500, task)
     master.mainloop()
 '''
@@ -82,6 +80,7 @@ def printMaze():
         mazeStr += "\n"
     print(mazeStr)
 
+
 def removePacman(row,col):
     maze[row][col] = 'p'
 
@@ -89,23 +88,15 @@ def removePacman(row,col):
 ########################## BACK END ############################
 
 
-maze = getMaze("maze1.txt")
+maze = getMaze("maze.txt")
 # INITIAL STATES
 DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
 START = DIMX + 1
 EXIT = DIMX*DIMY - 1
-<<<<<<< HEAD
-<<<<<<< HEAD
-# EXIT = getPelletIndex()
-=======
-
->>>>>>> parent of 4b927f4... New files
-=======
 
 
  
->>>>>>> e0f23ac6e0f4ef2bee10660ab6bdddbfb9bbbd48
 
 def runPath(path):
     task(path)
@@ -135,11 +126,6 @@ def task(path):
     
 task.counter = 0
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> e0f23ac6e0f4ef2bee10660ab6bdddbfb9bbbd48
 def task2(path):
     state = path[1]
     row = int(state/DIMX)
@@ -149,18 +135,9 @@ def task2(path):
     removePacman(row,col)
 
     #print()
-<<<<<<< HEAD
-    
-
         
 task.counter = 0
 
->>>>>>> parent of 4b927f4... New files
-=======
-        
-task.counter = 0
-
->>>>>>> e0f23ac6e0f4ef2bee10660ab6bdddbfb9bbbd48
 '''def DESCRIBE_STATE(state):
     row = int(state/ DIMX)
     col = state % DIMX
@@ -265,13 +242,13 @@ def h_hammings(s):
     r = int(s / DIMX)
     c = s % DIMX
     sum = 0
-    if (maze.is_wall(r,c,1,0)):
+    if (maze[r][c+1] == '1'):
         sum += 1
-    if (maze.is_wall(r,c,0,1)):
+    if (maze[r][c-1] == '1'):
         sum += 1
-    if (maze.is_wall(r,c,-1,0)):
+    if (maze[r-1][c] == '1'):
         sum += 1
-    if (maze.is_wall(r,c,0,-1)):
+    if (maze[r+1][c] == '1' ):
         sum += 1
     return sum
 
@@ -282,7 +259,7 @@ def h_manhattan(s):
 
 # return a cordinate of an index
 def coordinate(index):
-	return [int(index/DIMX), index % DIMX]
+    return [int(index/DIMX), index % DIMX]
 
 #<GOAL_TEST> (optional)
 GOAL_TEST = lambda s: goal_test(s)
@@ -295,4 +272,3 @@ GOAL_MESSAGE_FUNCTION = lambda s: goal_message(s)
 #<STATE_VIS>
 HEURISTICS = {'h_euclidean': h_euclidean, 'h_manhattan':h_manhattan, 'h_hammings':h_hammings}
  #</STAT_VIS>
-
