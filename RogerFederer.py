@@ -56,7 +56,7 @@ def respond(inputLine, situation) :
          if wordlist.count("run") > 0 :
             return target + ", Right after you!"
             #don't bother me,
-         if wordlist.count("pellets") > 0:
+         if wordlist.count("food") > 0:
             return "I can serve u more tennis ball."
 
          if wordlist.count("suck") > 0:
