@@ -51,22 +51,8 @@ def drawMaze(maze):
         y0 += WIDTH/dimx
         y1 += WIDTH/dimx
 
-'''def runGUI():
-    drawMaze(maze)
-    
-    def task():
-        createGUI("maze.txt",w)
-        master.after(500, task2)
 
-    def task2():
-        createGUI("maze1.txt",w)
-        master.after(500, task)
-
-    master.after(500, task)
-    master.mainloop()
-'''
-
-def putPacMan(row, col):
+def putPacman(row, col):
     maze[row][col] = '<'
 
 def printMaze():
@@ -85,6 +71,12 @@ def printMaze():
 def removePacman(row,col):
     maze[row][col] = 'p'
 
+def getPelletIndex():
+    for i in range(DIMX):
+        for j in range(DIMY):
+            if (maze[i][j] == '0'):
+                return i * DIMX + j * DIMY
+
 
 ########################## BACK END ############################
 
@@ -95,7 +87,11 @@ DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
 START = DIMX + 1
 EXIT = DIMX*DIMY - 1
+<<<<<<< HEAD
 
+=======
+# EXIT = getPelletIndex()
+>>>>>>> f47105571f2425a42ffeefdc610976ebda8ff64c
 
 def runPath(path):
     task(path)
@@ -109,9 +105,10 @@ def task(path):
     state = path[task.counter]
     row = int(state/DIMX)
     col = state % DIMX
-    putPacMan(row,col)
+    putPacman(row,col)
     drawMaze(maze)
     removePacman(row,col)
+    #printMaze()
     task.counter +=1
     master.update()
     if (task.counter == len(path)):
@@ -125,6 +122,7 @@ def task(path):
     
 task.counter = 0
 
+<<<<<<< HEAD
 def task2(path):
     state = path[1]
     row = int(state/DIMX)
@@ -139,6 +137,8 @@ def task2(path):
         
 task.counter = 0
 
+=======
+>>>>>>> f47105571f2425a42ffeefdc610976ebda8ff64c
 '''def DESCRIBE_STATE(state):
     row = int(state/ DIMX)
     col = state % DIMX
@@ -163,23 +163,32 @@ def can_move(s, From, To):
 
     #print(nFrom)
     #print(nTo)
-
+    logic = False
     if (maze[nTo[0]][nTo[1]] == '0' and From != To):
         if nFrom[0] == nTo[0] and nFrom[1] == nTo[1]-1 :
-            return True
+            logic = True
         elif nFrom[0] == nTo[0] and nFrom[1] == nTo[1]+1 :
-            return True
+            logic = True
         elif nFrom[1] == nTo[1] and nFrom[0] == nTo[0]-1 :
-            return True
+            logic = True
         elif nFrom[1] == nTo[1] and nFrom[0] == nTo[0]+1 :
-            return True
+            logic = True
     else: 
-        return False
+        logic = False
+
+    return logic
 
 def move(s,From,To):
     return To
 
 def goal_test(s):
+    # for i in range(DIMX):
+    #     for j in range(DIMY):
+    #         if (maze[i][j] == '0'):
+    #             return False
+
+    # return True
+    #printMaze()
     return s == EXIT
 
 def goal_message(s):
