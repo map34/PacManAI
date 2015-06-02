@@ -45,7 +45,7 @@ def respond(inputLine, situation) :
          if situation['Damage'] == True :
             return choice(DAMAGE)
          
-         if wordlist.count("pellets") > 0:
+         if wordlist.count("food") > 0:
             return "Bananananana."
 
          if wordlist.count("suck") > 0:
