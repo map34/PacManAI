@@ -51,8 +51,22 @@ def drawMaze(maze):
         y0 += WIDTH/dimx
         y1 += WIDTH/dimx
 
+'''def runGUI():
+    drawMaze(maze)
+    
+    def task():
+        createGUI("maze.txt",w)
+        master.after(500, task2)
 
-def putPacman(row, col):
+    def task2():
+        createGUI("maze1.txt",w)
+        master.after(500, task)
+
+    master.after(500, task)
+    master.mainloop()
+'''
+
+def putPacMan(row, col):
     maze[row][col] = '<'
 
 def printMaze():
@@ -68,30 +82,23 @@ def printMaze():
         mazeStr += "\n"
     print(mazeStr)
 
+
 def removePacman(row,col):
     maze[row][col] = 'p'
-
-def getPelletIndex():
-    for i in range(DIMX):
-        for j in range(DIMY):
-            if (maze[i][j] == '0'):
-                return i * DIMX + j * DIMY
 
 
 ########################## BACK END ############################
 
 
-maze = getMaze("maze1.txt")
+maze = getMaze("maze.txt")
 # INITIAL STATES
 DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
 START = DIMX + 1
 EXIT = DIMX*DIMY - 1
-<<<<<<< HEAD
 
-=======
-# EXIT = getPelletIndex()
->>>>>>> f47105571f2425a42ffeefdc610976ebda8ff64c
+
+ 
 
 def runPath(path):
     task(path)
@@ -105,10 +112,9 @@ def task(path):
     state = path[task.counter]
     row = int(state/DIMX)
     col = state % DIMX
-    putPacman(row,col)
+    putPacMan(row,col)
     drawMaze(maze)
     removePacman(row,col)
-    #printMaze()
     task.counter +=1
     master.update()
     if (task.counter == len(path)):
@@ -122,7 +128,6 @@ def task(path):
     
 task.counter = 0
 
-<<<<<<< HEAD
 def task2(path):
     state = path[1]
     row = int(state/DIMX)
@@ -132,13 +137,9 @@ def task2(path):
     removePacman(row,col)
 
     #print()
-    
-
         
 task.counter = 0
 
-=======
->>>>>>> f47105571f2425a42ffeefdc610976ebda8ff64c
 '''def DESCRIBE_STATE(state):
     row = int(state/ DIMX)
     col = state % DIMX
@@ -163,32 +164,23 @@ def can_move(s, From, To):
 
     #print(nFrom)
     #print(nTo)
-    logic = False
+
     if (maze[nTo[0]][nTo[1]] == '0' and From != To):
         if nFrom[0] == nTo[0] and nFrom[1] == nTo[1]-1 :
-            logic = True
+            return True
         elif nFrom[0] == nTo[0] and nFrom[1] == nTo[1]+1 :
-            logic = True
+            return True
         elif nFrom[1] == nTo[1] and nFrom[0] == nTo[0]-1 :
-            logic = True
+            return True
         elif nFrom[1] == nTo[1] and nFrom[0] == nTo[0]+1 :
-            logic = True
+            return True
     else: 
-        logic = False
-
-    return logic
+        return False
 
 def move(s,From,To):
     return To
 
 def goal_test(s):
-    # for i in range(DIMX):
-    #     for j in range(DIMY):
-    #         if (maze[i][j] == '0'):
-    #             return False
-
-    # return True
-    #printMaze()
     return s == EXIT
 
 def goal_message(s):
@@ -252,13 +244,13 @@ def h_hammings(s):
     r = int(s / DIMX)
     c = s % DIMX
     sum = 0
-    if (maze.is_wall(r,c,1,0)):
+    if (maze[r][c+1] == '1'):
         sum += 1
-    if (maze.is_wall(r,c,0,1)):
+    if (maze[r][c-1] == '1'):
         sum += 1
-    if (maze.is_wall(r,c,-1,0)):
+    if (maze[r-1][c] == '1'):
         sum += 1
-    if (maze.is_wall(r,c,0,-1)):
+    if (maze[r+1][c] == '1' ):
         sum += 1
     return sum
 
