@@ -1,6 +1,11 @@
 from tkinter import *
 import math
 import copy
+import PacMan as agentA
+import IronMan as agentB
+import RogerFederer as agentC
+import minion as agentD
+import marshawnLynch as agentE
 
 WIDTH = 630
 HEIGHT = 630
@@ -11,7 +16,7 @@ master = Tk()
 w = Canvas(master, width=WIDTH, height=HEIGHT)
 
 
-
+# Get the maze
 def getMaze(fname):
     mazeList = []
     with open(fname) as f:
@@ -21,10 +26,11 @@ def getMaze(fname):
             mazeList.append(list(wall))
     return mazeList
 
+# Get dimension of the maze
 def dim(mazeList):
     return [len(mazeList), len(mazeList[0])]
 
-
+# Draws the maze
 def drawMaze(maze):
 
     dimx = dim(maze)[0]
@@ -67,7 +73,7 @@ def drawMaze(maze):
 '''
 
 def putPacMan(row, col):
-    maze[row][col] = '<'
+    mazeGUI[row][col] = '<'
 
 def printMaze():
     mazeStr = ""
@@ -84,13 +90,12 @@ def printMaze():
 
 
 def removePacman(row,col):
-    maze[row][col] = 'p'
+    mazeGUI[row][col] = 'p'
 
 def getPelletIndex():
     for i in range(DIMX):
         for j in range(DIMY):
             if (maze[i][j] == '0'):
-                print("first 0 is : " + str(i * DIMX + j))
                 return i * DIMX + j
 
     return -1
@@ -98,10 +103,13 @@ def getPelletIndex():
 
 
 maze = getMaze("maze.txt")
+mazeGUI = getMaze("maze.txt")
 # INITIAL STATES
 DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
-START = DIMX + 1
+# START = DIMX + 1
+# Start at the center 
+START = 381 - 160 + 10 
 [x, y] = [int(START/DIMX), START % DIMX]
 maze[x][y] = ' '
 # EXIT = DIMX*DIMY - 1
@@ -123,7 +131,7 @@ def task(path):
     row = int(state/DIMX)
     col = state % DIMX
     putPacMan(row,col)
-    drawMaze(maze)
+    drawMaze(mazeGUI)
     removePacman(row,col)
     task.counter +=1
     master.update()
@@ -131,7 +139,7 @@ def task(path):
         task.counter = 0
         return
     else:
-        master.after(500, lambda: task(path))
+        master.after(75, lambda: task(path))
     #print(task.counter)
     #if (task.counter < len(path)-1):
         #task.counter += 1
@@ -212,6 +220,18 @@ def goal_test(s):
 def goal_message(s):
     return "Maze is solved!"
 
+# Top Right corner = 39
+# Top Left corner = 21
+# Bottom Right corner = 399
+# Bottom Left corner = 371
+
+# def ghost():
+    # int index = 
+
+agentBIndex = 39
+agentCIndex = 39
+agentDIndex = 371
+agentEIndex = 399
 
 
 class Operator:
@@ -287,7 +307,7 @@ def h_manhattan(s):
 
 # return a cordinate of an index
 def coordinate(index):
-	return [int(index/DIMX), index % DIMX]
+    return [int(index/DIMX), index % DIMX]
 
 def index(coordinate):
     return i * DIMX + j

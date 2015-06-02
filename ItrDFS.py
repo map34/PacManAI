@@ -17,7 +17,7 @@ else:
   import importlib
   Problem = importlib.import_module(sys.argv[1])
 
-
+path = []
 print("\nWelcome to ItrDFS")
 COUNT = None
 BACKLINKS = {}
@@ -47,11 +47,19 @@ def IterativeDFS(initial_state):
     if Problem.GOAL_TEST(S):
       if (S == Problem.EXIT):
         backtrace(S)
-        print("here")
         Problem.printMaze()
+        del OPEN[:]
+        del CLOSED[:]
+        OPEN.append(S)
+        BACKLINKS[Problem.HASHCODE(Problem.EXIT)] = -1
         Problem.EXIT = Problem.getPelletIndex()
+        print('next 0 index: ' + str(Problem.EXIT))
+        S = OPEN[0]
+        del OPEN[0]
+        CLOSED.append(S)
         if (Problem.EXIT == -1):
             print(Problem.GOAL_MESSAGE_FUNCTION(S))
+            Problem.runPath(path)
 
     COUNT += 1
     if (COUNT % 32)==0:
@@ -81,23 +89,26 @@ def IterativeDFS(initial_state):
     OPEN = L + OPEN
 
 def backtrace(S):
-  global BACKLINKS
+  global BACKLINKS, path
 
-  path = []
+  tempPath = []
   while not S == -1:
     [i, j] = Problem.coordinate(S)
     print('S: ' + str(S))
     Problem.maze[i][j] = ' '
-    path.append(S)
+    tempPath.append(S)
     S = BACKLINKS[Problem.HASHCODE(S)]
-  path.reverse()
+  tempPath.reverse()
   print("Solution path: ")
   #for s in path:
   #  print(Problem.DESCRIBE_STATE(s))
-  print(str(len(path)) + " solution paths")
-  print(path)
+  print(str(len(tempPath)) + " solution paths")
+  print(tempPath)
   # Problem.runPath(path)
-  return path     
+  for i in range(len(tempPath)):
+    path.append(tempPath[i])
+  # path.append(tempPath)
+  return tempPath        
   
 
 def occurs_in(s1, lst):

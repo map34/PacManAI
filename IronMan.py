@@ -56,7 +56,7 @@ def respond(inputLine, situation) :
          if wordlist[0:3] == 'let me go':
            return "Oh, U can't escape from me."
 
-         if wordlist.count("food") > 0:
+         if wordlist.count("pellets") > 0:
             return "Want some bullets?"
 
          if wordlist.count("suck") > 0:
@@ -85,6 +85,6 @@ def remove_punctuation(text):
 
 
 
-#print(respond("Hello", {'Character':"PacMan",'Inside': True, 'Damage': True}))
+print(respond("Hello", {'Character':"PacMan",'Inside': True, 'Damage': True}))
 
 
