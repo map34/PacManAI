@@ -61,7 +61,6 @@ def AStar(initial_state):
         if Problem.GOAL_TEST(n):
             if n == Problem.EXIT:
                 backtrace(n)
-                #print("here")
                 Problem.printMaze()
                 new_in_state= Problem.EXIT
                 Problem.EXIT = Problem.getPelletIndex()
@@ -108,6 +107,10 @@ def AStar(initial_state):
                 gTemp = GVALUE[Problem.HASHCODE(n)] + 1
                 hTemp = HFunction(newState)
 
+                # Move ghost
+                Problem.moveEnemy()
+                
+
                 if not occurs_in(newState, OPEN) or gTemp < GVALUE[Problem.HASHCODE(newState)]:
                     GVALUE[Problem.HASHCODE(newState)] = gTemp
                     FVALUE[Problem.HASHCODE(newState)] = gTemp + hTemp
@@ -129,7 +132,6 @@ def backtrace(S):
     tempPath = []
     while not S == -1:
         [i, j] = Problem.coordinate(S)
-        print('S: ' + str(S))
         Problem.maze[i][j] = ' '
         tempPath.append(S)
         S = BACKLINKS[Problem.HASHCODE(S)]

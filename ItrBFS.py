@@ -58,7 +58,6 @@ def IterativeBFS(initial_state):
         OPEN.append(S)
         BACKLINKS[Problem.HASHCODE(Problem.EXIT)] = -1
         Problem.EXIT = Problem.getPelletIndex()
-        print('next 0 index: ' + str(Problem.EXIT))
         S = OPEN[0]
         del OPEN[0]
         CLOSED.append(S)
@@ -105,7 +104,6 @@ def backtrace(S):
   tempPath = []
   while not S == -1:
     [i, j] = Problem.coordinate(S)
-    print('S: ' + str(S))
     Problem.maze[i][j] = ' '
     tempPath.append(S)
     S = BACKLINKS[Problem.HASHCODE(S)]

@@ -91,7 +91,6 @@ def getPelletIndex():
     for i in range(DIMX):
         for j in range(DIMY):
             if (maze[i][j] == '0'):
-                print("first 0 is : " + str(i * DIMX + j))
                 return i * DIMX + j
 
     return -1
@@ -103,7 +102,9 @@ mazeGUI = getMaze("maze.txt")
 # INITIAL STATES
 DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
-START = DIMX + 1
+# START = DIMX + 1
+# Start at the center 
+START = 381 - 160 + 10 
 [x, y] = [int(START/DIMX), START % DIMX]
 maze[x][y] = ' '
 # EXIT = DIMX*DIMY - 1
@@ -133,7 +134,7 @@ def task(path):
         task.counter = 0
         return
     else:
-        master.after(50, lambda: task(path))
+        master.after(75, lambda: task(path))
     #print(task.counter)
     #if (task.counter < len(path)-1):
         #task.counter += 1
@@ -214,6 +215,18 @@ def goal_test(s):
 def goal_message(s):
     return "Maze is solved!"
 
+# Top Right corner = 39
+# Top Left corner = 21
+# Bottom Right corner = 399
+# Bottom Left corner = 371
+
+# def ghost():
+    # int index = 
+
+enemy1Index = 39
+
+def moveEnemy():
+    
 
 
 class Operator:
