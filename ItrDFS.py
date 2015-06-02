@@ -45,9 +45,13 @@ def IterativeDFS(initial_state):
     CLOSED.append(S)
 
     if Problem.GOAL_TEST(S):
-      print(Problem.GOAL_MESSAGE_FUNCTION(S))
-      backtrace(S)
-      return
+      if (S == Problem.EXIT):
+        backtrace(S)
+        print("here")
+        Problem.printMaze()
+        Problem.EXIT = Problem.getPelletIndex()
+        if (Problem.EXIT == -1):
+            print(Problem.GOAL_MESSAGE_FUNCTION(S))
 
     COUNT += 1
     if (COUNT % 32)==0:
@@ -81,14 +85,19 @@ def backtrace(S):
 
   path = []
   while not S == -1:
+    [i, j] = Problem.coordinate(S)
+    print('S: ' + str(S))
+    Problem.maze[i][j] = ' '
     path.append(S)
     S = BACKLINKS[Problem.HASHCODE(S)]
   path.reverse()
   print("Solution path: ")
   #for s in path:
   #  print(Problem.DESCRIBE_STATE(s))
-  Problem.runPath(path)
-  return path    
+  print(str(len(path)) + " solution paths")
+  print(path)
+  # Problem.runPath(path)
+  return path     
   
 
 def occurs_in(s1, lst):

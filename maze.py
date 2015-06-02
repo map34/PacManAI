@@ -86,7 +86,14 @@ def printMaze():
 def removePacman(row,col):
     maze[row][col] = 'p'
 
+def getPelletIndex():
+    for i in range(DIMX):
+        for j in range(DIMY):
+            if (maze[i][j] == '0'):
+                print("first 0 is : " + str(i * DIMX + j))
+                return i * DIMX + j
 
+    return -1
 ########################## BACK END ############################
 
 
@@ -95,7 +102,10 @@ maze = getMaze("maze.txt")
 DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
 START = DIMX + 1
-EXIT = DIMX*DIMY - 1
+[x, y] = [int(START/DIMX), START % DIMX]
+maze[x][y] = ' '
+# EXIT = DIMX*DIMY - 1
+EXIT = getPelletIndex()
 
 
  
@@ -164,8 +174,9 @@ def can_move(s, From, To):
 
     #print(nFrom)
     #print(nTo)
+    
+    if (maze[nTo[0]][nTo[1]] != '1' and From != To):
 
-    if (maze[nTo[0]][nTo[1]] == '0' and From != To):
         if nFrom[0] == nTo[0] and nFrom[1] == nTo[1]-1 :
             return True
         elif nFrom[0] == nTo[0] and nFrom[1] == nTo[1]+1 :
@@ -178,9 +189,24 @@ def can_move(s, From, To):
         return False
 
 def move(s,From,To):
+    # print('s is : ' + str(s))
+    # print('From is : ' + str(From))
+    # print('To is : ' + str(To) + '\n')
+    # [i, j] = coordinate(To)
+    # print('To ' + str(To))
+    # maze[i][j] = ' '
     return To
 
 def goal_test(s):
+    # global EXIT
+    # if (s == EXIT):
+    #     print("here")
+    #     printMaze()
+    #     EXIT = getPelletIndex();
+    #     if (EXIT == -1):
+    #         return True
+    # return False
+    # print(maze[1])
     return s == EXIT
 
 def goal_message(s):
@@ -262,6 +288,9 @@ def h_manhattan(s):
 # return a cordinate of an index
 def coordinate(index):
 	return [int(index/DIMX), index % DIMX]
+
+def index(coordinate):
+    return i * DIMX + j
 
 #<GOAL_TEST> (optional)
 GOAL_TEST = lambda s: goal_test(s)

@@ -23,6 +23,7 @@ else:
 print("\nWelcome to ItrBFS")
 COUNT = None
 BACKLINKS = {}
+path = []
 
 def runDFS():
   initial_state = Problem.CREATE_INITIAL_STATE()
@@ -33,6 +34,7 @@ def runDFS():
   BACKLINKS = {}
   IterativeBFS(initial_state)
   print(str(COUNT)+" states examined.")
+  print(Problem.maze)
 
 def IterativeBFS(initial_state):
   global COUNT, BACKLINKS
@@ -43,13 +45,27 @@ def IterativeBFS(initial_state):
 
   while OPEN != []:
     S = OPEN[0]
+
     del OPEN[0]
     CLOSED.append(S);
 
     if Problem.GOAL_TEST(S):
-      print(Problem.GOAL_MESSAGE_FUNCTION(S))
-      backtrace(S)
-      return
+      if (S == Problem.EXIT):
+        backtrace(S)
+        Problem.printMaze()
+        del OPEN[:]
+        del CLOSED[:]
+        OPEN.append(S)
+        BACKLINKS[Problem.HASHCODE(Problem.EXIT)] = -1
+        Problem.EXIT = Problem.getPelletIndex()
+        print('next 0 index: ' + str(Problem.EXIT))
+        S = OPEN[0]
+        del OPEN[0]
+        CLOSED.append(S)
+        if (Problem.EXIT == -1):
+            print(Problem.GOAL_MESSAGE_FUNCTION(S))
+            Problem.runPath(path)
+
 
     COUNT += 1
     if (COUNT % 32)==0:
@@ -63,13 +79,11 @@ def IterativeBFS(initial_state):
       #Optionally uncomment the following when debugging
       #a new problem formulation.
       #print("Trying operator: "+op.name)
+      
+        
       if op.precond(S):
         new_state = op.state_transf(S)
-        #-------------
-        #print("IN")
-        #print(S)
-        #print(new_state)
-        #--------------
+        
         if not occurs_in(new_state, CLOSED) and not occurs_in(new_state, OPEN):
           L.append(new_state)
           BACKLINKS[Problem.HASHCODE(new_state)] = S
@@ -82,22 +96,30 @@ def IterativeBFS(initial_state):
           del OPEN[i]; break
 
     OPEN = OPEN + L
+    # print('OPEN is: ' + str(OPEN[0]))
+
 
 def backtrace(S):
-  global BACKLINKS
+  global BACKLINKS, path
 
-  path = []
+  tempPath = []
   while not S == -1:
-    path.append(S)
+    [i, j] = Problem.coordinate(S)
+    print('S: ' + str(S))
+    Problem.maze[i][j] = ' '
+    tempPath.append(S)
     S = BACKLINKS[Problem.HASHCODE(S)]
-  path.reverse()
+  tempPath.reverse()
   print("Solution path: ")
   #for s in path:
   #  print(Problem.DESCRIBE_STATE(s))
-  print(str(len(path)) + " solution paths")
-  print(path)
-  Problem.runPath(path)
-  return path    
+  print(str(len(tempPath)) + " solution paths")
+  print(tempPath)
+  # Problem.runPath(path)
+  for i in range(len(tempPath)):
+    path.append(tempPath[i])
+  # path.append(tempPath)
+  return tempPath    
   
 
 def occurs_in(s1, lst):
