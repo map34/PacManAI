@@ -133,7 +133,7 @@ def task(path):
         task.counter = 0
         return
     else:
-        master.after(500, lambda: task(path))
+        master.after(50, lambda: task(path))
     #print(task.counter)
     #if (task.counter < len(path)-1):
         #task.counter += 1
