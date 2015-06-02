@@ -57,9 +57,11 @@ def drawMaze(maze):
     def task():
         createGUI("maze.txt",w)
         master.after(500, task2)
+        
     def task2():
         createGUI("maze1.txt",w)
         master.after(500, task)
+        
     master.after(500, task)
     master.mainloop()
 '''
@@ -259,7 +261,7 @@ def h_manhattan(s):
 
 # return a cordinate of an index
 def coordinate(index):
-    return [int(index/DIMX), index % DIMX]
+	return [int(index/DIMX), index % DIMX]
 
 #<GOAL_TEST> (optional)
 GOAL_TEST = lambda s: goal_test(s)
