@@ -1,6 +1,11 @@
 from tkinter import *
 import math
 import copy
+import PacMan as agentA
+import IronMan as agentB
+import RogerFederer as agentC
+import minion as agentD
+import marshawnLynch as agentE
 
 WIDTH = 630
 HEIGHT = 630
@@ -223,10 +228,10 @@ def goal_message(s):
 # def ghost():
     # int index = 
 
-enemy1Index = 39
-
-def moveEnemy():
-    
+agentBIndex = 39
+agentCIndex = 39
+agentDIndex = 371
+agentEIndex = 399
 
 
 class Operator:

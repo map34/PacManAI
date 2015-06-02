@@ -109,7 +109,7 @@ def AStar(initial_state):
 
                 # Move ghost
                 Problem.moveEnemy()
-                
+
 
                 if not occurs_in(newState, OPEN) or gTemp < GVALUE[Problem.HASHCODE(newState)]:
                     GVALUE[Problem.HASHCODE(newState)] = gTemp
