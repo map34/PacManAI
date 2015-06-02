@@ -11,7 +11,6 @@ master = Tk()
 w = Canvas(master, width=WIDTH, height=HEIGHT)
 
 
-
 def getMaze(fname):
     mazeList = []
     with open(fname) as f:
@@ -26,7 +25,6 @@ def dim(mazeList):
 
 
 def drawMaze(maze):
-
     dimx = dim(maze)[0]
     dimy = dim(maze)[1]
     mazeList = maze
@@ -50,21 +48,6 @@ def drawMaze(maze):
             x1 += WIDTH/dimx
         y0 += WIDTH/dimx
         y1 += WIDTH/dimx
-
-'''def runGUI():
-    drawMaze(maze)
-    
-    def task():
-        createGUI("maze.txt",w)
-        master.after(500, task2)
-
-    def task2():
-        createGUI("maze1.txt",w)
-        master.after(500, task)
-
-    master.after(500, task)
-    master.mainloop()
-'''
 
 def putPacMan(row, col):
     maze[row][col] = '<'
@@ -94,8 +77,10 @@ maze = getMaze("maze.txt")
 # INITIAL STATES
 DIMX = dim(maze)[0]-1
 DIMY = dim(maze)[1]-1
-START = DIMX + 1
+START = DIMX+1
 EXIT = DIMX*DIMY - 1
+
+GHOST_START = DIMX*DIMY - 1
 
 
  
@@ -104,6 +89,8 @@ def runPath(path):
     task(path)
     Button(master, text="Quit", command=quit).pack()
     master.mainloop()
+
+
 
 def quit():
     master.quit()
@@ -161,7 +148,6 @@ def can_move(s, From, To):
     From = copy_state(s)
     nFrom = (int(From/ DIMX), From % DIMX)
     nTo = (int(To / DIMX), To % DIMX)
-
     #print(nFrom)
     #print(nTo)
 
