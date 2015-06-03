@@ -51,6 +51,8 @@ def drawMaze(maze):
                 w.create_rectangle(x0, y0, x1,y1, fill="blue")
             elif mazeList[i][j] == '<':
                 w.create_oval(x0+5,y0+5,x1-5,y1-5, fill="red")
+            elif mazeList[i][j] == 'M':
+                w.create_oval(x0+5,y0+5,x1-5,y1-5, fill="green")
             elif mazeList[i][j] == '0':
                 w.create_oval(x0+7,y0+7,x1-7,y1-7, fill="yellow")
             x0 += WIDTH/dimx
@@ -73,8 +75,8 @@ def drawMaze(maze):
     master.mainloop()
 '''
 
-def putPacMan(row, col):
-    mazeGUI[row][col] = '<'
+def putChar(row, col,char):
+    mazeGUI[row][col] = char
 
 def printMaze():
     mazeStr = ""
@@ -96,8 +98,8 @@ def printMaze():
     print(mazeStr)
 
 
-def removePacman(row,col):
-    mazeGUI[row][col] = 'p'
+def removeChar(row,col,char):
+    mazeGUI[row][col] = char
 
 def getPelletIndex():
     for i in range(DIMX):
@@ -122,31 +124,69 @@ maze[x][y] = ' '
 # EXIT = DIMX*DIMY - 1
 EXIT = getPelletIndex()
 
+################# ENEMIES ###################
+agentBIndex = 81
+agentCIndex = 39
+agentDIndex = 371
+agentEIndex = 399
+
+[agentBX, agentBY] = [int(agentBIndex/DIMX), agentBIndex % DIMX]
+
+previousSpace = maze[agentBX][agentBY]
+nextSpace = '' 
+
+
+enemyPrevious = mazeGUI[agentBX][agentBY]
+enemy1PrevState = agentBIndex
+enemy1PrevRow = agentBX
+enemy1PrevCol = agentBY
+
 
  
 
-def runPath(path):
-    task(path)
+def runPath(path, enemy1Path):
+    task(path, enemy1Path)
     Button(master, text="Quit", command=quit).pack()
     master.mainloop()
 
 def quit():
     master.quit()
 
-def task(path):
+def task(path, enemy1Path):
+    global enemy1PrevState, enemy1PrevRow, enemy1PrevCol, enemyPrevious
     state = path[task.counter]
     row = int(state/DIMX)
     col = state % DIMX
-    putPacMan(row,col)
+
+    #previous
+    enemy1PrevRow = int(enemy1PrevState/DIMX)
+    enemy1PrevCol = enemy1PrevState % DIMX
+
+    
+    #next
+    enemy1State = enemy1Path[task.counter]
+    [enemy1Row, enemy1Col] = coordinate(enemy1State)
+
+    enemyNext = mazeGUI[enemy1Row][enemy1Col]
+
+    putChar(enemy1PrevRow, enemy1PrevCol, enemyPrevious)
+    putChar(row,col,'<')
+    putChar(enemy1Row, enemy1Col,'M')
+
     drawMaze(mazeGUI)
-    removePacman(row,col)
+    removeChar(row,col,'p')
+    #removeChar(enemy1Row, enemy1Col,enemyNext)
+    putChar(enemy1Row, enemy1Col, enemyNext)
     task.counter +=1
+
+    enemyPrevious = enemyNext
+    enemy1PrevState = enemy1State
     master.update()
     if (task.counter == len(path)):
         task.counter = 0
         return
     else:
-        master.after(75, lambda: task(path))
+        master.after(75, lambda: task(path, enemy1Path))
     #print(task.counter)
     #if (task.counter < len(path)-1):
         #task.counter += 1
@@ -157,9 +197,9 @@ def task2(path):
     state = path[1]
     row = int(state/DIMX)
     col = state % DIMX
-    putPacMan(row,col)
+    putChar(row,col)
     drawMaze(maze)
-    removePacman(row,col)
+    removeChar(row,col)
 
     #print()
         
@@ -168,9 +208,9 @@ task.counter = 0
 '''def DESCRIBE_STATE(state):
     row = int(state/ DIMX)
     col = state % DIMX
-    putPacMan(row,col)
+    putChar(row,col)
     master.after(2000,task(path)) 
-    removePacman(row,col)
+    removeChar(row,col)
 '''
 def DEEP_EQUALS(s1,s2):
     return s1 == s2
@@ -189,8 +229,8 @@ def can_move(s, From, To):
 
     #print(nFrom)
     #print(nTo)
-    
-    if (maze[nTo[0]][nTo[1]] != '1' and From != To):
+    check = maze[nTo[0]][nTo[1]]
+    if (check != '1' and check != 'M' and From != To):
 
         if nFrom[0] == nTo[0] and nFrom[1] == nTo[1]-1 :
             return True
@@ -232,20 +272,13 @@ def goal_message(s):
 # Bottom Right corner = 399
 # Bottom Left corner = 371
 
-# def ghost():
-    # int index = 
+    
 
-
-################# ENEMIES ###################
-agentBIndex = 81
-agentCIndex = 39
-agentDIndex = 371
-agentEIndex = 399
 
 # Puts enemy 1 to a place
 def putEnemy1(index):
-    [rowOld, colOld] = coordinate(index)
-    maze[rowOld][colOld] = "0"
+    global previousSpace, nextSpace, choose_to_move
+
     options = []
 
     #[row, col] = coordinate(index)
@@ -267,7 +300,14 @@ def putEnemy1(index):
         [row, col] = coordinate(choose_to_move)
         check = maze[row][col]
     
+    nextSpace = maze[row][col]
     maze[row][col] = 'M'
+
+
+    [rowOld, colOld] = coordinate(index)
+    maze[rowOld][colOld] = previousSpace
+
+    previousSpace = nextSpace
 
     return choose_to_move
 
@@ -315,7 +355,7 @@ OPERATORS = [Operator("Move "+str(p)+" to "+str(q),
     for (p,q) in move_combination]
 
 # the 2d distance between current position to s
-def h_euclidean(s):
+def h_euclidean(s,loc):
     IndexFrom = coordinate(s)
     IndexTo = coordinate(EXIT)
     rowDiff = IndexTo[0] - IndexFrom[0]
@@ -324,7 +364,7 @@ def h_euclidean(s):
     return result
 
 # counts how many walls inside a state
-def h_hammings(s):
+def h_hammings(s, loc):
     r = int(s / DIMX)
     c = s % DIMX
     sum = 0
@@ -339,8 +379,12 @@ def h_hammings(s):
     return sum
 
 # dx + dy between current position to EXIT
-def h_manhattan(s):
+def h_manhattan(s, loc):
     return EXIT - s
+
+# distance between exit and ghost
+def h_ghost(s, loc):
+    return  -math.fabs(s - loc)
 #</OPERATORS>
 
 # return a cordinate of an index
@@ -348,7 +392,7 @@ def coordinate(index):
     return [int(index/DIMX), index % DIMX]
 
 def index(coordinate):
-    return i * DIMX + j
+    return coordinate[0] * DIMX + coordinate[1]
 
 #<GOAL_TEST> (optional)
 GOAL_TEST = lambda s: goal_test(s)
@@ -359,6 +403,6 @@ GOAL_MESSAGE_FUNCTION = lambda s: goal_message(s)
 #</GOAL_MESSAGE_FUNCTION>
 
 #<STATE_VIS>
-HEURISTICS = {'h_euclidean': h_euclidean, 'h_manhattan':h_manhattan, 'h_hammings':h_hammings}
+HEURISTICS = {'h_euclidean': h_euclidean, 'h_manhattan':h_manhattan, 'h_hammings':h_hammings, 'h_ghost':h_ghost}
  #</STAT_VIS>
 

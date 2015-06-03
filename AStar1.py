@@ -17,6 +17,7 @@ elif len(sys.argv)== 3:
     #Puzzle = importlib.import_module(sys.argv[3].replace(".py","")) 
     
 path = []
+enemy1Path = []
 
 print("Welcome to AStar Algorithm!\n")
 COUNT = None
@@ -36,6 +37,7 @@ def AStar(initial_state):
     global count, BACKLINKS, enemy1State
     OPEN = [initial_state]
     enemy1State = Problem.agentBIndex
+    enemy1Path.append(enemy1State)
 
     CLOSED = []
     GVALUE = {}
@@ -43,14 +45,15 @@ def AStar(initial_state):
     GVALUE[Problem.HASHCODE(initial_state)] = 0
     BACKLINKS[Problem.HASHCODE(initial_state)] = -1
     count = 0
-    FVALUE[Problem.HASHCODE(initial_state)] = GVALUE[Problem.HASHCODE(initial_state)] + HFunction(initial_state)
+    FVALUE[Problem.HASHCODE(initial_state)] = GVALUE[Problem.HASHCODE(initial_state)] + HFunction(initial_state, enemy1State)
     while OPEN != []:
         # Finding a minimum state based on FVALUE
         # move ghost
-        
-        #print(enemy1State)
+    
+        #enemy1State = Problem.putEnemy1(enemy1State)
+    
+
         #Problem.printMaze()
-        enemy1State = Problem.putEnemy1(enemy1State)
         minimumState = initial_state
         for state in OPEN:
             minimumState = state
@@ -66,9 +69,13 @@ def AStar(initial_state):
         # Ending state
         if Problem.GOAL_TEST(n):
             if n == Problem.EXIT:
+                enemy1State = Problem.putEnemy1(enemy1State)
+                
                 backtrace(n)
-                Problem.printMaze()
+                for i in range(len(path) - len(enemy1Path)):
+                    enemy1Path.append(enemy1State)
 
+                Problem.printMaze()
                 new_in_state= Problem.EXIT
                 Problem.EXIT = Problem.getPelletIndex()
                 # New solving
@@ -78,7 +85,7 @@ def AStar(initial_state):
                 FVALUE = {}
                 GVALUE[Problem.HASHCODE(new_in_state)] = 0
                 BACKLINKS[Problem.HASHCODE(new_in_state)] = -1
-                FVALUE[Problem.HASHCODE(new_in_state)] = GVALUE[Problem.HASHCODE(new_in_state)] + HFunction(new_in_state)
+                FVALUE[Problem.HASHCODE(new_in_state)] = GVALUE[Problem.HASHCODE(new_in_state)] + HFunction(new_in_state, enemy1State)
                 # Find minimum
                 minimumState = new_in_state
                 for state in OPEN:
@@ -93,7 +100,7 @@ def AStar(initial_state):
                 CLOSED.append(n)
                 if (Problem.EXIT == -1):
                     print(Problem.GOAL_MESSAGE_FUNCTION(n)) 
-                    Problem.runPath(path)
+                    Problem.runPath(path, enemy1Path)
 
 
         # count outputting
@@ -109,11 +116,10 @@ def AStar(initial_state):
         for op in Problem.OPERATORS:
             if op.precond(n):
                 newState = op.state_transf(n)
-
                 if  occurs_in(newState, CLOSED):
                     continue
                 gTemp = GVALUE[Problem.HASHCODE(n)] + 1
-                hTemp = HFunction(newState)
+                hTemp = HFunction(newState, enemy1State)
 
 
                 if not occurs_in(newState, OPEN) or gTemp < GVALUE[Problem.HASHCODE(newState)]:
@@ -122,6 +128,7 @@ def AStar(initial_state):
                     if not occurs_in(newState, OPEN):
                         OPEN.append(newState)
                     BACKLINKS[Problem.HASHCODE(newState)] = n
+
 
 
             # Deleting min
