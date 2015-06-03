@@ -2,11 +2,11 @@ from tkinter import *
 import math
 import random
 import copy
-#import PacMan as agentA
-#import IronMan as agentB
-#import RogerFederer as agentC
-#import minion as agentD
-#import marshawnLynch as agentE
+import FatBoy as agentA
+import IronMan as agentB
+import RogerFederer as agentC
+import minion as agentD
+import marshawnLynch as agentE
 
 WIDTH = 630
 HEIGHT = 630
@@ -142,9 +142,22 @@ enemy1PrevRow = agentBX
 enemy1PrevCol = agentBY
 
 
+def introduce():
+    print("A: "+agentA.agentName() + ': ' + agentA.introduce()+"\n")
+    print("B: "+agentB.agentName() + ': ' + agentB.introduce()+"\n")
+    # print("C: "+agentC.agentName() + ': ' + agentC.introduce()+"\n")
+    # print("D: "+agentD.agentName() + ': ' + agentB.introduce()+"\n")
+    # print("E: "+agentE.agentName() + ': ' + agentC.introduce()+"\n")
+
  
+remark = "Hello" 
+situationA = {'Character':agentB.agentName() , 'Inside': True, 'Damage': False}
+situationB = {'Character':agentA.agentName() , 'Inside': True, 'Damage': False}
+
+turn = 0
 
 def runPath(path, enemy1Path):
+    introduce()
     task(path, enemy1Path)
     Button(master, text="Quit", command=quit).pack()
     master.mainloop()
@@ -154,6 +167,8 @@ def quit():
 
 def task(path, enemy1Path):
     global enemy1PrevState, enemy1PrevRow, enemy1PrevCol, enemyPrevious
+    global remark, situationA, situationB, turn
+
     state = path[task.counter]
     row = int(state/DIMX)
     col = state % DIMX
@@ -162,11 +177,9 @@ def task(path, enemy1Path):
     enemy1PrevRow = int(enemy1PrevState/DIMX)
     enemy1PrevCol = enemy1PrevState % DIMX
 
-    
     #next
     enemy1State = enemy1Path[task.counter]
     [enemy1Row, enemy1Col] = coordinate(enemy1State)
-
     enemyNext = mazeGUI[enemy1Row][enemy1Col]
 
     putChar(enemy1PrevRow, enemy1PrevCol, enemyPrevious)
@@ -181,6 +194,19 @@ def task(path, enemy1Path):
 
     enemyPrevious = enemyNext
     enemy1PrevState = enemy1State
+
+    #Conversation
+    if (turn % 5 == 0):
+        remarkA = agentA.respond(remark, situationA)    
+        print(str(int(turn / 5))+"A: "+agentA.agentName() + ': ' + remarkA+"\n")
+
+        remarkB = agentB.respond(remarkA, situationB)    
+        print(str(int(turn / 5))+"B: "+agentB.agentName() + ': ' + remarkB+"\n")
+
+        remark = remarkB
+
+    turn += 1
+
     master.update()
     if (task.counter == len(path)):
         task.counter = 0
@@ -191,18 +217,6 @@ def task(path, enemy1Path):
     #if (task.counter < len(path)-1):
         #task.counter += 1
     
-task.counter = 0
-
-def task2(path):
-    state = path[1]
-    row = int(state/DIMX)
-    col = state % DIMX
-    putChar(row,col)
-    drawMaze(maze)
-    removeChar(row,col)
-
-    #print()
-        
 task.counter = 0
 
 '''def DESCRIBE_STATE(state):

@@ -84,7 +84,7 @@ def remove_punctuation(text):
    return sub(punctuation_pattern,'', text)
 
 
-print(respond("Hello", {'Character':"PacMan",'Inside': True, 'Damage': False}))
+# print(respond("Hello", {'Character':"PacMan",'Inside': True, 'Damage': False}))
 
 
 
