@@ -18,6 +18,9 @@ elif len(sys.argv)== 3:
     
 path = []
 enemy1Path = []
+enemy2Path = []
+enemy3Path = []
+enemy4Path = []
 
 print("Welcome to AStar Algorithm!\n")
 COUNT = None
@@ -38,6 +41,12 @@ def AStar(initial_state):
     OPEN = [initial_state]
     enemy1State = Problem.agentBIndex
     enemy1Path.append(enemy1State)
+    enemy2State = Problem.agentCIndex
+    enemy2Path.append(enemy2State)
+    enemy3State = Problem.agentDIndex
+    enemy3Path.append(enemy3State)
+    enemy4State = Problem.agentEIndex
+    enemy4Path.append(enemy4State)
 
     CLOSED = []
     GVALUE = {}
@@ -48,12 +57,6 @@ def AStar(initial_state):
     FVALUE[Problem.HASHCODE(initial_state)] = GVALUE[Problem.HASHCODE(initial_state)] + HFunction(initial_state, enemy1State)
     while OPEN != []:
         # Finding a minimum state based on FVALUE
-        # move ghost
-    
-        #enemy1State = Problem.putEnemy1(enemy1State)
-    
-
-        #Problem.printMaze()
         minimumState = initial_state
         for state in OPEN:
             minimumState = state
@@ -70,10 +73,23 @@ def AStar(initial_state):
         if Problem.GOAL_TEST(n):
             if n == Problem.EXIT:
                 enemy1State = Problem.putEnemy1(enemy1State)
+                enemy2State = Problem.putEnemy2()
+                enemy3State = Problem.putEnemy3(enemy3State)
+                enemy4State = Problem.putEnemy4(enemy4State)
+
                 
                 backtrace(n)
                 for i in range(len(path) - len(enemy1Path)):
                     enemy1Path.append(enemy1State)
+
+                for i in range(len(path) - len(enemy2Path)):
+                    enemy2Path.append(enemy2State)
+
+                for i in range(len(path) - len(enemy3Path)):
+                    enemy3Path.append(enemy3State)
+
+                for i in range(len(path) - len(enemy4Path)):
+                    enemy4Path.append(enemy4State)
 
                 Problem.printMaze()
                 new_in_state= Problem.EXIT
@@ -100,7 +116,7 @@ def AStar(initial_state):
                 CLOSED.append(n)
                 if (Problem.EXIT == -1):
                     print(Problem.GOAL_MESSAGE_FUNCTION(n)) 
-                    Problem.runPath(path, enemy1Path)
+                    Problem.runPath(path, enemy1Path, enemy2Path, enemy3Path, enemy4Path)
 
 
         # count outputting

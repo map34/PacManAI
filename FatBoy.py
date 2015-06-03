@@ -25,7 +25,7 @@ HIDE = ["I am faster than you.",
 
 def introduce():
    #introduction of the agent to the user
-   return("""Yo! I am FatBoy/""")
+   return("Yo! I am FatBoy")
 
 punctuation_pattern = compile(r"\,|\.|\?|\!|\;|\:")    
 

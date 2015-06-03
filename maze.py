@@ -48,32 +48,17 @@ def drawMaze(maze):
         x1 = WIDTH/dimx
         for j in range (dim(mazeList)[1]):
             if mazeList[i][j] == '1':
-                w.create_rectangle(x0, y0, x1,y1, fill="blue")
+                w.create_rectangle(x0, y0, x1,y1, fill="yellow")
             elif mazeList[i][j] == '<':
                 w.create_oval(x0+5,y0+5,x1-5,y1-5, fill="red")
             elif mazeList[i][j] == 'M':
                 w.create_oval(x0+5,y0+5,x1-5,y1-5, fill="green")
             elif mazeList[i][j] == '0':
-                w.create_oval(x0+7,y0+7,x1-7,y1-7, fill="yellow")
+                w.create_oval(x0+7,y0+7,x1-7,y1-7, fill="blue")
             x0 += WIDTH/dimx
             x1 += WIDTH/dimx
         y0 += WIDTH/dimx
         y1 += WIDTH/dimx
-
-'''def runGUI():
-    drawMaze(maze)
-    
-    def task():
-        createGUI("maze.txt",w)
-        master.after(500, task2)
-
-    def task2():
-        createGUI("maze1.txt",w)
-        master.after(500, task)
-
-    master.after(500, task)
-    master.mainloop()
-'''
 
 def putChar(row, col,char):
     mazeGUI[row][col] = char
@@ -103,9 +88,14 @@ def removeChar(row,col,char):
 
 def getPelletIndex():
     for i in range(DIMX):
+        # if (i % 2 == 1):
         for j in range(DIMY):
             if (maze[i][j] == '0'):
                 return i * DIMX + j
+        # else:
+        #     for j in range(DIMY):
+        #         if (maze[i][20 - j] == '0'):
+        #             return i * DIMX + j            
 
     return -1
 ########################## BACK END ############################
@@ -126,48 +116,83 @@ EXIT = getPelletIndex()
 
 ################# ENEMIES ###################
 agentBIndex = 81
-agentCIndex = 39
-agentDIndex = 371
+agentCIndex = 371
+agentDIndex = 39
 agentEIndex = 399
 
 [agentBX, agentBY] = [int(agentBIndex/DIMX), agentBIndex % DIMX]
+[agentCX, agentCY] = [int(agentCIndex/DIMX), agentCIndex % DIMX]
+[agentDX, agentDY] = [int(agentDIndex/DIMX), agentDIndex % DIMX]
+[agentEX, agentEY] = [int(agentEIndex/DIMX), agentEIndex % DIMX]
 
-previousSpace = maze[agentBX][agentBY]
-nextSpace = '' 
+previousSpace1 = maze[agentBX][agentBY]
+nextSpace1 = ' ' 
+previousSpace2 = maze[agentCX][agentCY]
+nextSpace2 = ' ' 
+previousSpace3 = maze[agentDX][agentDY]
+nextSpace3 = ' ' 
+previousSpace4 = maze[agentEX][agentEY]
+nextSpace4 = ' ' 
 
 
-enemyPrevious = mazeGUI[agentBX][agentBY]
+enemy1Previous = mazeGUI[agentBX][agentBY]
 enemy1PrevState = agentBIndex
 enemy1PrevRow = agentBX
 enemy1PrevCol = agentBY
 
+enemy2Previous = mazeGUI[agentCX][agentCY]
+enemy2PrevState = agentCIndex
+enemyPrevRow = agentCX
+enemy2PrevCol = agentCY
+
+enemy3Previous = mazeGUI[agentDX][agentDY]
+enemy3PrevState = agentDIndex
+enemy3PrevRow = agentDX
+enemy3PrevCol = agentDY
+
+enemy4Previous = mazeGUI[agentEX][agentEY]
+enemy4PrevState = agentEIndex
+enemy4PrevRow = agentEX
+enemy4PrevCol = agentEY
+
+life = 100
 
 def introduce():
     print("A: "+agentA.agentName() + ': ' + agentA.introduce()+"\n")
     print("B: "+agentB.agentName() + ': ' + agentB.introduce()+"\n")
-    # print("C: "+agentC.agentName() + ': ' + agentC.introduce()+"\n")
-    # print("D: "+agentD.agentName() + ': ' + agentB.introduce()+"\n")
-    # print("E: "+agentE.agentName() + ': ' + agentC.introduce()+"\n")
+    print("C: "+agentC.agentName() + ': ' + agentC.introduce()+"\n")
+    print("D: "+agentD.agentName() + ': ' + agentD.introduce()+"\n")
+    print("E: "+agentE.agentName() + ': ' + agentC.introduce()+"\n")
 
  
 remark = "Hello" 
 situationA = {'Character':agentB.agentName() , 'Inside': True, 'Damage': False}
 situationB = {'Character':agentA.agentName() , 'Inside': True, 'Damage': False}
+situationC = {'Character':agentA.agentName() , 'Inside': True, 'Damage': False}
+situationD = {'Character':agentA.agentName() , 'Inside': True, 'Damage': False}
+situationE = {'Character':agentA.agentName() , 'Inside': True, 'Damage': False}
 
 turn = 0
 
-def runPath(path, enemy1Path):
+def runPath(path, enemy1Path, enemy2Path, enemy3Path, enemy4Path):
     introduce()
-    task(path, enemy1Path)
+    task(path, enemy1Path, enemy2Path, enemy3Path, enemy4Path)
     Button(master, text="Quit", command=quit).pack()
     master.mainloop()
 
 def quit():
     master.quit()
+    if (life < 0):
+        print("You died. You have failed.")
+    else:
+        print("You have " + str(life) + " life left! You are victorious!")
 
-def task(path, enemy1Path):
-    global enemy1PrevState, enemy1PrevRow, enemy1PrevCol, enemyPrevious
-    global remark, situationA, situationB, turn
+def task(path, enemy1Path, enemy2Path, enemy3Path, enemy4Path):
+    global enemy1PrevState, enemy1PrevRow, enemy1PrevCol, enemy1Previous
+    global enemy2PrevState, enemy2PrevRow, enemy2PrevCol, enemy2Previous
+    global enemy3PrevState, enemy3PrevRow, enemy3PrevCol, enemy3Previous
+    global enemy4PrevState, enemy4PrevRow, enemy4PrevCol, enemy4Previous
+    global remark, situationA, situationB, situationC, situationD, situationE, turn, life
 
     state = path[task.counter]
     row = int(state/DIMX)
@@ -177,23 +202,73 @@ def task(path, enemy1Path):
     enemy1PrevRow = int(enemy1PrevState/DIMX)
     enemy1PrevCol = enemy1PrevState % DIMX
 
+    enemy2PrevRow = int(enemy2PrevState/DIMX)
+    enemy2PrevCol = enemy2PrevState % DIMX
+
+    enemy3PrevRow = int(enemy3PrevState/DIMX)
+    enemy3PrevCol = enemy3PrevState % DIMX
+
+    enemy4PrevRow = int(enemy4PrevState/DIMX)
+    enemy4PrevCol = enemy4PrevState % DIMX
+
     #next
     enemy1State = enemy1Path[task.counter]
     [enemy1Row, enemy1Col] = coordinate(enemy1State)
-    enemyNext = mazeGUI[enemy1Row][enemy1Col]
+    enemy1Next = mazeGUI[enemy1Row][enemy1Col]
 
-    putChar(enemy1PrevRow, enemy1PrevCol, enemyPrevious)
+    enemy2State = enemy2Path[task.counter]
+    [enemy2Row, enemy2Col] = coordinate(enemy2State)
+    enemy2Next = mazeGUI[enemy2Row][enemy2Col]
+
+    enemy3State = enemy3Path[task.counter]
+    [enemy3Row, enemy3Col] = coordinate(enemy3State)
+    enemy3Next = mazeGUI[enemy3Row][enemy3Col]
+
+    enemy4State = enemy4Path[task.counter]
+    [enemy4Row, enemy4Col] = coordinate(enemy4State)
+    enemy4Next = mazeGUI[enemy4Row][enemy4Col]
+
+    if (enemy1State == state):
+        life = life - 10
+        situationB['Damage'] = True
+    elif (enemy2State == state):
+        life = life - 10
+        situationC['Damage'] = True
+    elif (enemy3State == state):
+        life = life - 10
+        situationD['Damage'] = True
+    elif (enemy4State == state):
+        life = life - 10
+        situationE['Damage'] = True    
+
+    putChar(enemy1PrevRow, enemy1PrevCol, enemy1Previous)
+    putChar(enemy2PrevRow, enemy2PrevCol, enemy2Previous)
+    putChar(enemy3PrevRow, enemy3PrevCol, enemy3Previous)
+    putChar(enemy4PrevRow, enemy4PrevCol, enemy4Previous)
     putChar(row,col,'<')
     putChar(enemy1Row, enemy1Col,'M')
+    putChar(enemy2Row, enemy2Col,'M')
+    putChar(enemy3Row, enemy3Col,'M')
+    putChar(enemy4Row, enemy4Col,'M')
 
     drawMaze(mazeGUI)
     removeChar(row,col,'p')
-    #removeChar(enemy1Row, enemy1Col,enemyNext)
-    putChar(enemy1Row, enemy1Col, enemyNext)
+    
+    putChar(enemy1Row, enemy1Col, enemy1Next)
+    putChar(enemy2Row, enemy2Col, enemy2Next)
+    putChar(enemy3Row, enemy3Col, enemy3Next)
+    putChar(enemy4Row, enemy4Col, enemy4Next)
     task.counter +=1
 
-    enemyPrevious = enemyNext
+    enemy1Previous = enemy1Next
     enemy1PrevState = enemy1State
+    enemy2Previous = enemy2Next
+    enemy2PrevState = enemy2State
+    enemy3Previous = enemy3Next
+    enemy3PrevState = enemy3State
+    enemy4Previous = enemy4Next
+    enemy4PrevState = enemy4State
+
 
     #Conversation
     if (turn % 5 == 0):
@@ -203,29 +278,38 @@ def task(path, enemy1Path):
         remarkB = agentB.respond(remarkA, situationB)    
         print(str(int(turn / 5))+"B: "+agentB.agentName() + ': ' + remarkB+"\n")
 
-        remark = remarkB
+        remarkC = agentC.respond(remarkA, situationC)    
+        print(str(int(turn / 5))+"C: "+agentC.agentName() + ': ' + remarkC+"\n")
+
+        remarkD = agentD.respond(remarkA, situationD)    
+        print(str(int(turn / 5))+"D: "+agentD.agentName() + ': ' + remarkD+"\n")
+
+        remarkE = agentE.respond(remarkA, situationE)    
+        print(str(int(turn / 5))+"E: "+agentE.agentName() + ': ' + remarkE+"\n")
+
+        
+        remark = random.choice([remarkB, remarkC, remarkD, remarkE])
 
     turn += 1
+
+    situationB['Damage'] = False
+    situationC['Damage'] = False
+    situationD['Damage'] = False
+    situationE['Damage'] = False
 
     master.update()
     if (task.counter == len(path)):
         task.counter = 0
         return
     else:
-        master.after(75, lambda: task(path, enemy1Path))
+        master.after(75, lambda: task(path, enemy1Path, enemy2Path, enemy3Path, enemy4Path))
     #print(task.counter)
     #if (task.counter < len(path)-1):
         #task.counter += 1
     
 task.counter = 0
 
-'''def DESCRIBE_STATE(state):
-    row = int(state/ DIMX)
-    col = state % DIMX
-    putChar(row,col)
-    master.after(2000,task(path)) 
-    removeChar(row,col)
-'''
+
 def DEEP_EQUALS(s1,s2):
     return s1 == s2
 
@@ -244,7 +328,7 @@ def can_move(s, From, To):
     #print(nFrom)
     #print(nTo)
     check = maze[nTo[0]][nTo[1]]
-    if (check != '1' and check != 'M' and From != To):
+    if (check != '1' and From != To):
 
         if nFrom[0] == nTo[0] and nFrom[1] == nTo[1]-1 :
             return True
@@ -258,40 +342,19 @@ def can_move(s, From, To):
         return False
 
 def move(s,From,To):
-    # print('s is : ' + str(s))
-    # print('From is : ' + str(From))
-    # print('To is : ' + str(To) + '\n')
-    # [i, j] = coordinate(To)
-    # print('To ' + str(To))
-    # maze[i][j] = ' '
     return To
 
 def goal_test(s):
-    # global EXIT
-    # if (s == EXIT):
-    #     print("here")
-    #     printMaze()
-    #     EXIT = getPelletIndex();
-    #     if (EXIT == -1):
-    #         return True
-    # return False
-    # print(maze[1])
+
     return s == EXIT
 
 def goal_message(s):
     return "Maze is solved!"
-
-# Top Right corner = 39
-# Top Left corner = 21
-# Bottom Right corner = 399
-# Bottom Left corner = 371
-
     
-
 
 # Puts enemy 1 to a place
 def putEnemy1(index):
-    global previousSpace, nextSpace, choose_to_move
+    global previousSpace1, nextSpace1, choose_to_move
 
     options = []
 
@@ -314,17 +377,134 @@ def putEnemy1(index):
         [row, col] = coordinate(choose_to_move)
         check = maze[row][col]
     
-    nextSpace = maze[row][col]
+    nextSpace1 = maze[row][col]
     maze[row][col] = 'M'
 
-
     [rowOld, colOld] = coordinate(index)
-    maze[rowOld][colOld] = previousSpace
+    maze[rowOld][colOld] = previousSpace1
 
-    previousSpace = nextSpace
+    previousSpace1 = nextSpace1
 
     return choose_to_move
 
+# once maze is generated, search for all the available open spot in the
+#left lower corner section and add indices/coordinates into a list
+#use choice(openSpot) to generate a randome spot for ghost to teleport to
+
+openSpot = []
+def LowerLeftOpen():
+    for i in range(10, 20):
+        for j in range(0, 10):
+            if maze[i][j] != '1':
+                global openSpot
+                openSpot.append((i,j))
+
+#lower left section, 9 < row < 20; 0 <= col < 10
+def putEnemy2():
+    global enemy2PrevState, previousSpace2, nextSpace2, openSpot
+    LowerLeftOpen()
+
+    [row, col] = random.choice(openSpot)
+    nextSpace2 = maze[row][col]
+    maze[row][col] = 'M'
+
+    [rowOld, colOld] = coordinate(enemy2PrevState)
+    maze[rowOld][colOld] = previousSpace2
+
+    enemy2PrevState = index([row, col])
+    previousSpace2 = nextSpace2
+
+    return index([row, col])
+
+
+#upper right section, 0 <= row < 10; 9 < col < 20
+def putEnemy3(index1):
+    global previousSpace3, nextSpace3
+    options = []
+
+    
+    right = index1+1
+    options.append(right)
+    left = index1-1
+    options.append(left) 
+    up = index1 -(DIMY)
+    options.append(up)
+    down = index1 + (DIMY)
+    options.append(down)
+    
+    choose_to_move = random.choice(options)
+    [row, col] = coordinate(choose_to_move)
+    
+    #out of boudary
+    while (row < 0 or row > 9) and (col >19 or col < 10):
+        choose_to_move = random.choice(options)
+        [row, col] = coordinate(choose_to_move)
+
+    check = maze[row][col]
+
+    if check == '1':
+        jumpDir = random.choice(range(4))
+        (row, col) = updateRC(row, col, jumpDir)
+        while(row < 0 or row > 9) and (col >19 or col < 10):
+            jumpDir = random.choice(range(4))
+            (row, col) = updateRC(row, col, jumpDir)
+
+
+    nextSpace3 = maze[row][col]
+    maze[row][col] = 'M'
+
+    [rowOld, colOld] = coordinate(index1)
+    maze[rowOld][colOld] = previousSpace3
+
+    previousSpace3 = nextSpace3
+
+    return index([row, col])
+
+# Puts enemy 4 to a place
+def putEnemy4(index):
+    global previousSpace4, nextSpace4, choose_to_move
+
+    options = []
+
+    #[row, col] = coordinate(index)
+    right = index+1
+    options.append(right)
+    left = index-1
+    options.append(left) 
+    up = index -(DIMY)
+    options.append(up)
+    down = index + (DIMY)
+    options.append(down)
+
+    #print(options)
+    choose_to_move = random.choice(options)
+    [row, col] = coordinate(choose_to_move)
+    check = maze[row][col]
+    while check == '1':
+        choose_to_move = random.choice(options)
+        [row, col] = coordinate(choose_to_move)
+        check = maze[row][col]
+    
+    nextSpace4 = maze[row][col]
+    maze[row][col] = 'M'
+
+    [rowOld, colOld] = coordinate(index)
+    maze[rowOld][colOld] = previousSpace4
+
+    previousSpace4 = nextSpace4
+
+    return choose_to_move
+
+def updateRC(row, col, jumpDir):
+    if(dir == 0):
+        row = row + 1
+    elif(jumpDir == 1):
+        row = row - 1 
+    elif(jumpDir == 2):
+        col = col + 1
+    else:
+        col = col - 1 
+    return (row, col)
 
 class Operator:
     def __init__(self, name, precond, state_transf):
